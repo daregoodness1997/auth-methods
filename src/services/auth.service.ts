@@ -1,12 +1,7 @@
 import { prisma } from "../lib/prisma";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
-enum Role {
-  USER = "USER",
-  STAFF = "STAFF",
-  ADMIN = "ADMIN",
-}
+import { Role } from "../../generated/prisma/browser";
 
 export class AuthService {
   async register(email: string, password: string, name?: string, role?: Role) {
@@ -57,7 +52,12 @@ export class AuthService {
     }
 
     const token = jwt.sign(
-      { userId: user.id, role: user.role, name: user.name },
+      {
+        userId: user.id,
+        role: user.role,
+        name: user.name,
+        departmentId: user?.departmentId,
+      },
       process.env.JWT_SECRET!,
       {
         expiresIn: "1h",
