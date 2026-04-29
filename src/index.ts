@@ -4,8 +4,13 @@ import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./swagger";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
+import documentRoutes from "./routes/document.routes";
 import { authMiddleware } from "./middlewares/auth.middleware";
-import { authorize, authorizeRole } from "./middlewares/policies.middleware";
+import {
+  authorize,
+  authorizeAccess,
+  authorizeRole,
+} from "./middlewares/policies.middleware";
 import { Role } from "../generated/prisma/enums";
 
 const app = express();
@@ -24,9 +29,16 @@ app.use(
   authorizeRole([Role.STAFF, Role.ADMIN]),
   userRoutes,
 );
+app.use(
+  "/documents",
+  authMiddleware,
+  authorizeRole([Role.STAFF, Role.ADMIN]),
+  authorizeAccess,
+  documentRoutes,
+);
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}: http://localhost:9000`);
+  console.log(`Server is running on port ${PORT}: http://localhost:${PORT}`);
 });

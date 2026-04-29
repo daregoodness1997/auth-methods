@@ -19,17 +19,19 @@ enum Role {
 }
 
 model User {
-  id           String      @id @default(uuid())
-  email        String      @unique
+  id           String       @id @default(uuid())
+  email        String       @unique
   name         String?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
   password     Password?
   orders       Order[]
   staff        Staff?
-  role         Role        @default(USER)
+  role         Role         @default(USER)
   departmentId String?
-  department   Department? @relation(fields: [departmentId], references: [id])
+  department   Department?  @relation(fields: [departmentId], references: [id])
+  accessLists  AccessList[]
+  documents    Document[]
 }
 
 model Department {
@@ -81,4 +83,25 @@ model Item {
   updatedAt    DateTime    @updatedAt
   departmentId String?
   department   Department? @relation(fields: [departmentId], references: [id])
+}
+
+model Document {
+  id          String       @id @default(uuid())
+  title       String
+  content     String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  accessLists AccessList[]
+  createdBy   User         @relation(fields: [createdById], references: [id])
+  createdById String
+}
+
+model AccessList {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  document   Document @relation(fields: [documentId], references: [id])
+  documentId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

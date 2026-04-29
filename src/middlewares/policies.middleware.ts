@@ -2,6 +2,7 @@
 
 import { NextFunction, Request, Response } from "express";
 import { Role } from "../../generated/prisma/enums";
+import { prisma } from "../lib/prisma";
 
 export const roles = {
   ADMIN: ["*"],
@@ -49,4 +50,34 @@ export const authorizeByAttribute = (attribute: string) => {
 
     return res.status(403).json({ message: "Forbidden" });
   };
+};
+
+export const authorizeAccess = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { userId } = req.user as { userId: string };
+  const { resourceId } = req.params;
+
+  const owner = await prisma.document.findUnique({
+    where: { id: `${resourceId}`, createdById: userId },
+  });
+
+  if (owner) {
+    return next();
+  }
+
+  const access = await prisma.accessList.findFirst({
+    where: {
+      userId,
+      documentId: `${resourceId}`,
+    },
+  });
+
+  if (access) {
+    return next();
+  }
+
+  return res.status(403).json({ message: "Forbidden" });
 };
