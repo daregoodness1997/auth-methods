@@ -33,7 +33,7 @@ export const authorizeRole = (allowedRoles: Role[]) => {
     const { role } = req.user as { role: Role };
 
     if (role || allowedRoles.includes(role)) {
-      next();
+      return next();
     }
 
     return res.status(403).json({ message: "Forbidden" });
@@ -58,7 +58,7 @@ export const authorizeAccess = async (
   next: NextFunction,
 ) => {
   const { userId } = req.user as { userId: string };
-  const { resourceId } = req.params;
+  const { id: resourceId } = req.params;
 
   const owner = await prisma.document.findUnique({
     where: { id: `${resourceId}`, createdById: userId },

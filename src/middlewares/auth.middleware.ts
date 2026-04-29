@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { prisma } from "../lib/prisma";
 
 declare global {
   namespace Express {
@@ -28,4 +29,23 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     return res.status(401).json({ error: "Invalid token" });
   }
 };
-export { authMiddleware };
+
+const apiKeyMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const apiKey =
+    (req.headers["x-api-key"] as string) ||
+    (req.headers.authorization?.split(" ")[1] as string);
+  if (!apiKey) {
+    return res.status(401).json({ error: "API key missing" });
+  }
+
+  const validKey = prisma.apiKey.findUnique({
+    where: { key: apiKey, valid: true },
+  });
+
+  if (!validKey) {
+    return res.status(401).json({ error: "Invalid API key" });
+  }
+  next();
+};
+
+export { authMiddleware, apiKeyMiddleware };

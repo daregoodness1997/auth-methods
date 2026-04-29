@@ -6,11 +6,7 @@ import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import documentRoutes from "./routes/document.routes";
 import { authMiddleware } from "./middlewares/auth.middleware";
-import {
-  authorize,
-  authorizeAccess,
-  authorizeRole,
-} from "./middlewares/policies.middleware";
+import { authorizeRole } from "./middlewares/policies.middleware";
 import { Role } from "../generated/prisma/enums";
 
 const app = express();
@@ -33,7 +29,7 @@ app.use(
   "/documents",
   authMiddleware,
   authorizeRole([Role.STAFF, Role.ADMIN]),
-  authorizeAccess,
+
   documentRoutes,
 );
 

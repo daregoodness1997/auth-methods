@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -19,19 +14,20 @@ enum Role {
 }
 
 model User {
-  id           String       @id @default(uuid())
-  email        String       @unique
-  name         String?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  password     Password?
-  orders       Order[]
-  staff        Staff?
-  role         Role         @default(USER)
-  departmentId String?
-  department   Department?  @relation(fields: [departmentId], references: [id])
-  accessLists  AccessList[]
-  documents    Document[]
+  id            String        @id @default(uuid())
+  email         String        @unique
+  name          String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  password      Password?
+  orders        Order[]
+  staff         Staff?
+  role          Role          @default(USER)
+  departmentId  String?
+  department    Department?   @relation(fields: [departmentId], references: [id])
+  accessLists   AccessList[]
+  documents     Document[]
+  personalDatas PersonalData?
 }
 
 model Department {
@@ -104,4 +100,28 @@ model AccessList {
   documentId String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+model PersonalData {
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  gender        String?
+  age           Int?
+  nin           String?  @unique
+  bvn           String?  @unique
+  vin           String?  @unique
+  maritalStatus String?
+}
+
+model ApiKey {
+  id         String   @id @default(uuid())
+  key        String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  valid      Boolean  @default(true)
+  usageCount Int      @default(0)
+  maxUsage   Int?
 }

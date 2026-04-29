@@ -2,9 +2,12 @@ import { prisma } from "../lib/prisma";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Role } from "../../generated/prisma/browser";
+import { CreateUserDtoType } from "../dtos/user/create-user-dto";
+import { LoginUserDtoType } from "../dtos/user/login-user-dto";
 
 export class AuthService {
-  async register(email: string, password: string, name?: string, role?: Role) {
+  async register(data: CreateUserDtoType) {
+    const { email, password, name, role } = data;
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       throw new Error("User already exists");
@@ -32,7 +35,8 @@ export class AuthService {
 
     return { token };
   }
-  async login(email: string, password: string) {
+  async login(data: LoginUserDtoType) {
+    const { email, password } = data;
     const user = await prisma.user.findUnique({
       where: { email },
       include: { password: true },

@@ -113,6 +113,219 @@ const options: swaggerJsdoc.Options = {
             },
           },
         },
+        Document: {
+          type: "object",
+          properties: {
+            id: {
+              type: "string",
+              format: "uuid",
+              example: "550e8400-e29b-41d4-a716-446655440000",
+            },
+            title: {
+              type: "string",
+              example: "Project Proposal",
+            },
+            content: {
+              type: "string",
+              example: "This document outlines the project scope.",
+            },
+            createdById: {
+              type: "string",
+              format: "uuid",
+              example: "550e8400-e29b-41d4-a716-446655440001",
+            },
+            createdAt: {
+              type: "string",
+              format: "date-time",
+            },
+            updatedAt: {
+              type: "string",
+              format: "date-time",
+            },
+          },
+        },
+        CreateDocumentRequest: {
+          type: "object",
+          required: ["title", "content"],
+          properties: {
+            title: {
+              type: "string",
+              example: "Project Proposal",
+            },
+            content: {
+              type: "string",
+              example: "This document outlines the project scope.",
+            },
+          },
+        },
+        UpdateDocumentRequest: {
+          type: "object",
+          properties: {
+            title: {
+              type: "string",
+              example: "Updated Title",
+            },
+            content: {
+              type: "string",
+              example: "Updated content.",
+            },
+          },
+        },
+        AddCollaboratorRequest: {
+          type: "object",
+          required: ["userId"],
+          properties: {
+            userId: {
+              type: "string",
+              format: "uuid",
+              example: "550e8400-e29b-41d4-a716-446655440002",
+            },
+          },
+        },
+        AccessList: {
+          type: "object",
+          properties: {
+            id: {
+              type: "string",
+              format: "uuid",
+            },
+            userId: {
+              type: "string",
+              format: "uuid",
+            },
+            documentId: {
+              type: "string",
+              format: "uuid",
+            },
+            createdAt: {
+              type: "string",
+              format: "date-time",
+            },
+            updatedAt: {
+              type: "string",
+              format: "date-time",
+            },
+          },
+        },
+        PersonalDataRequest: {
+          type: "object",
+          required: ["gender", "age", "nin", "bvn", "vin", "maritalStatus"],
+          properties: {
+            gender: {
+              type: "string",
+            },
+            age: {
+              type: "integer",
+            },
+            nin: {
+              type: "string",
+            },
+            bvn: {
+              type: "string",
+            },
+            vin: {
+              type: "string",
+            },
+            maritalStatus: {
+              type: "string",
+            },
+          },
+          example: {
+            gender: "Male",
+            age: 30,
+            nin: "12345678901",
+            bvn: "22345678901",
+            vin: "32345678901234567890",
+            maritalStatus: "Single",
+          },
+        },
+        PersonalData: {
+          type: "object",
+          properties: {
+            id: {
+              type: "string",
+              format: "uuid",
+            },
+            userId: {
+              type: "string",
+              format: "uuid",
+            },
+            gender: {
+              type: "string",
+              example: "Male",
+            },
+            age: {
+              type: "integer",
+              example: 30,
+            },
+            nin: {
+              type: "string",
+              example: "12345678901",
+            },
+            bvn: {
+              type: "string",
+              example: "22345678901",
+            },
+            vin: {
+              type: "string",
+              example: "32345678901234567890",
+            },
+            maritalStatus: {
+              type: "string",
+              example: "Single",
+            },
+            createdAt: {
+              type: "string",
+              format: "date-time",
+            },
+            updatedAt: {
+              type: "string",
+              format: "date-time",
+            },
+          },
+        },
+        CreateApiKeyRequest: {
+          type: "object",
+          properties: {
+            maxUsage: {
+              type: "integer",
+              nullable: true,
+            },
+          },
+          example: {
+            maxUsage: 100,
+          },
+        },
+        ApiKey: {
+          type: "object",
+          properties: {
+            id: {
+              type: "string",
+              format: "uuid",
+            },
+            key: {
+              type: "string",
+            },
+            valid: {
+              type: "boolean",
+            },
+            usageCount: {
+              type: "integer",
+            },
+            maxUsage: {
+              type: "integer",
+              nullable: true,
+            },
+            createdAt: {
+              type: "string",
+              format: "date-time",
+            },
+            updatedAt: {
+              type: "string",
+              format: "date-time",
+            },
+          },
+        },
       },
       securitySchemes: {
         bearerAuth: {

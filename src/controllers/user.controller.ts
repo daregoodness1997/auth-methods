@@ -30,4 +30,35 @@ export class UserController {
       res.status(500).json({ error: "Internal server error" });
     }
   }
+
+  async addPersonalData(req: Request, res: Response) {
+    const { userId } = req.user as { userId: string };
+    const { gender, age, nin, bvn, vin, maritalStatus } = req.body;
+    try {
+      const personalData = await this.userService.addPersonalData(userId, {
+        gender,
+        age,
+        nin,
+        bvn,
+        vin,
+        maritalStatus,
+      });
+      res.status(201).json(personalData);
+    } catch (err: any) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+
+  async getPersonalData(req: Request, res: Response) {
+    const { userId } = req.user as { userId: string };
+    try {
+      const personalData = await this.userService.getPersonalData(userId);
+      if (!personalData) {
+        return res.status(404).json({ error: "Personal data not found" });
+      }
+      res.status(200).json(personalData);
+    } catch (err: any) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
 }
