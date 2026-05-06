@@ -47,5 +47,5 @@ export const deleteApiKey = async (id: string) => {
 };
 
 export const listApiKeys = async () => {
-  return await prisma.apiKey.findMany();
+  return await prisma.apiKey.findMany({ cacheStrategy: { ttl: 60 } });
 };

@@ -1,12 +1,26 @@
 import { decrypt, encrypt } from "../lib/encryption";
 import { prisma } from "../lib/prisma";
+import { redisClient } from "../lib/redis";
 
 export class UserService {
   async getUserByEmail(email: string) {
     return await prisma.user.findUnique({ where: { email } });
   }
   async getAllUser() {
-    return await prisma.user.findMany();
+    let users;
+    if (await redisClient.exists("all_users")) {
+      const cachedUsers = await redisClient.get("all_users");
+      if (cachedUsers) {
+        return JSON.parse(cachedUsers);
+      }
+    } else {
+      users = await prisma.user.findMany({
+        select: { name: true, email: true, role: true },
+        cacheStrategy: { ttl: 60 },
+      });
+    }
+
+    redisClient.setex("all_users", 50, JSON.stringify(users));
   }
 
   async addPersonalData(

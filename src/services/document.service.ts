@@ -6,7 +6,7 @@ export class DocumentService {
   }
 
   async getAllDocuments() {
-    return await prisma.document.findMany();
+    return await prisma.document.findMany({ cacheStrategy: { ttl: 60 } });
   }
 
   async createDocument(data: {

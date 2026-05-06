@@ -16,11 +16,11 @@ export const roles = {
   USER: ["view:order", "create:order"],
 };
 
-export const authorize = (permission: string) => {
+export const authorize = (claim: string) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const { role } = req.user as { role: Role };
 
-    if (roles[role]?.includes("*") || roles[role]?.includes(permission)) {
+    if (roles[role]?.includes("*") || roles[role]?.includes(claim)) {
       return next();
     }
 
@@ -32,7 +32,7 @@ export const authorizeRole = (allowedRoles: Role[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const { role } = req.user as { role: Role };
 
-    if (role || allowedRoles.includes(role)) {
+    if (role && allowedRoles.includes(role)) {
       return next();
     }
 
